@@ -11,4 +11,5 @@
 ### Prerequisites
 
 * mongoimport
-[Install MongoDB Database Tools](https://www.mongodb.com/try/download/database-tools "MongoDB Database Tools)
+
+[Install MongoDB Database Tools](https://www.mongodb.com/try/download/database-tools "MongoDB Database Tools")
