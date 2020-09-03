@@ -20,16 +20,15 @@ def graph():
     t = tweets.find({})
     word_count = 0
     word_count2 = 0
-    word = "great"
-    word2 = "bad"
+    word = "biden"
+    word2 = "trump"
     tweet = t[0]
     for tw in t:
         if word in tw['tweet']:
             word_count+=1
-    for tw in t:
         if word2 in tw['tweet']:
             word_count2+=1
-    return render_template('graph.html', word_count=word_count, word_count2=word_count2)
+    return render_template('graph.html', word_count=word_count, word_count2=word_count2, word=word, word2=word2)
     #return str(tweet['tweet'])
 
 

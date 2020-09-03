@@ -5,78 +5,42 @@
 {% endblock %}
 {% block content %}
     <div class="wrapper">
-		<p>{{ word_count }}</p>
+		<p>{{ word_count }} {{ word_count2 }}</p>
       <h1>World population over time</h1>
       <h2>Number of people (in millions) living on earth, the last 500 years</h2>
-	<div id="canvas-holder" style="width:40%">
-		<canvas id="chart-area"></canvas>
-	</div>
+	<canvas id="myChart" width="400" height="400"></canvas>
     </div>
 
     <!--<script src="static/script.js"></script>-->
-	<script>
-	var config = {
-			type: 'pie',
-			data: {
-				datasets: [{
-					data: [
-						{{ word_count }},
-						{{ word_count2 }}
-					],
-					backgroundColor: [
-						window.chartColors.red,
-						window.chartColors.orange,
-					],
-					label: 'Dataset 1'
-				}],
-				labels: [
-					'Red',
-					'Orange',
-				]
-			},
-			options: {
-				responsive: true
-			}
-		};
-
-		window.onload = function() {
-			var ctx = document.getElementById('chart-area').getContext('2d');
-			window.myPie = new Chart(ctx, config);
-		};
-
-		document.getElementById('randomizeData').addEventListener('click', function() {
-			config.data.datasets.forEach(function(dataset) {
-				dataset.data = dataset.data.map(function() {
-					return randomScalingFactor();
-				});
-			});
-
-			window.myPie.update();
-		});
-
-		var colorNames = Object.keys(window.chartColors);
-		document.getElementById('addDataset').addEventListener('click', function() {
-			var newDataset = {
-				backgroundColor: [],
-				data: [],
-				label: 'New dataset ' + config.data.datasets.length,
-			};
-
-			for (var index = 0; index < config.data.labels.length; ++index) {
-				newDataset.data.push(randomScalingFactor());
-
-				var colorName = colorNames[index % colorNames.length];
-				var newColor = window.chartColors[colorName];
-				newDataset.backgroundColor.push(newColor);
-			}
-
-			config.data.datasets.push(newDataset);
-			window.myPie.update();
-		});
-
-		document.getElementById('removeDataset').addEventListener('click', function() {
-			config.data.datasets.splice(0, 1);
-			window.myPie.update();
-		});
-	</script>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ["{{ word }}", "{{ word2 }}"],
+        datasets: [{
+            label: '# of Word Uses',
+            data: [{{ word_count }}, {{ word_count2 }}],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
 {% endblock %}
