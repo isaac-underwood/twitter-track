@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import twint
 from pymongo import MongoClient
 import pprint
@@ -15,20 +15,24 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/graph')
+@app.route('/graph', methods=['GET', 'POST'])
 def graph():
-    t = tweets.find({})
-    word_count = 0
-    word_count2 = 0
-    word = "biden"
-    word2 = "trump"
-    tweet = t[0]
-    for tw in t:
-        if word in tw['tweet']:
-            word_count+=1
-        if word2 in tw['tweet']:
-            word_count2+=1
-    return render_template('graph.html', word_count=word_count, word_count2=word_count2, word=word, word2=word2)
+    if request.method == 'POST':
+        org = request.form['news']
+        word = request.form['search']
+        start = request.form['start']
+        end = request.form['end']
+        if org == 'all':
+            t = tweets.find({"date": {"$lt": start}, "date": {"$gt": end}})
+        else:
+            t = tweets.find({"username": org, "date": {"$lt": start}, "date": {"$gt": end}})
+        word_count = 0
+        for tw in t:
+            if word in tw['tweet']:
+                word_count+=1
+        return render_template('graph.html', word_count=word_count, word=word)
+    else:
+        return render_template('graph.html')
     #return str(tweet['tweet'])
 
 

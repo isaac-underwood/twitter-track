@@ -9,11 +9,9 @@
     {% endblock %}
   </head>
   <body>
+    <nav class="navbar navbar-dark bg-primary">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Navbar</a>
+    </nav>
     <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
-      {% block footer %}
-      <p>Twitter App</p>
-      {% endblock %}
-    </div>
   </body>
 </html>

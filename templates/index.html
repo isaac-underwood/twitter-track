@@ -1,14 +1,36 @@
 {% extends "layout.html" %}
 {% block title %}Index{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Index</h1>
-  <p class="important">
-    Welcome on my awesome homepage.
-	</p>
-	<form type="POST" action="{{ url_for('graph') }}">
-		<button type="submit" class="btn btn-primary">Submit</button>
-	</form>
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-md-auto">
+      <h1 class="o">Index</h1>
+      <p class="important">
+        Welcome on my awesome homepage.
+      </p>
+      <form method="POST" action="{{ url_for('graph') }}">
+        <label for="news">News org:</label>
+        <select name="news" id="news" required>
+          <option value="all">All</option>
+          <option value="cnn">CNN</option>
+          <option value="msnbc">MSNBC</option>
+          <option value="bbcnews">BBC</option>
+          <option value="WSJ">Wall Street Journal</option>
+          <option value="foxnewsalert">Fox News</option>
+          <option value="nytimes">New York Times</option>
+        </select><br>
+        <label for="search">Word to search for:</label>
+        <input type="text" id="search" name="search" required><br>
+		<label for="start">Start date:</label>
+		<input type="date" id="start" name="start" required><br>
+		<label for="end">End date:</label>
+		<input type="date" id="end" name="end" required><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

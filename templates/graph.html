@@ -5,9 +5,7 @@
 {% endblock %}
 {% block content %}
     <div class="wrapper">
-		<p>{{ word_count }} {{ word_count2 }}</p>
-      <h1>World population over time</h1>
-      <h2>Number of people (in millions) living on earth, the last 500 years</h2>
+      <h1>Word Count</h1>
 	<canvas id="myChart" width="400" height="400"></canvas>
     </div>
 
@@ -17,17 +15,15 @@ var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: ["{{ word }}", "{{ word2 }}"],
+        labels: ["{{ word }}"],
         datasets: [{
             label: '# of Word Uses',
-            data: [{{ word_count }}, {{ word_count2 }}],
+            data: [{{ word_count }}],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)'
+                'rgba(255, 99, 132, 0.2)'
             ],
             borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)'
+                'rgba(255, 99, 132, 1)'
             ],
             borderWidth: 1
         }]
