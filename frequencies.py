@@ -188,7 +188,7 @@ class Frequency:
                     "dateUntil": {"$dateFromString": {"dateString": date_until}},
                     "year": {"$year": {"$dateFromString": {"dateString": "$date"}}},
                     "month": {"$month": {"$dateFromString": {"dateString": "$date"}}},
-                    "day": {"$day": {"$dateFromString": {"dateString": "$date"}}},
+                    "day": {"$dayOfMonth": {"$dateFromString": {"dateString": "$date"}}},
                 }
             },
             # {
