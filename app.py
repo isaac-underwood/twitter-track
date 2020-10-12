@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import twint
 from pymongo import MongoClient
-import pprint
+from datetime import datetime
 
 client = MongoClient('localhost', 27017)
 db = client.twitter
@@ -12,25 +12,53 @@ tc = twint.Config()
 
 @app.route('/')
 def index():
+    t = tweets.find_one()
+    date = t['date'].split("-")
+    print(date[0])
     return render_template('index.html')
 
 
 @app.route('/graph', methods=['GET', 'POST'])
 def graph():
     if request.method == 'POST':
+        days_count = [0,0,0,0,0,0,0]
+        months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+        months_count = [0,0,0,0,0,0,0,0,0,0,0,0]
+        weeks_count = [0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,0,0]
+        aggregate = request.form['aggregate']
         org = request.form['news']
         word = request.form['search']
         start = request.form['start']
         end = request.form['end']
+        graph = request.form['graph']
+        print(aggregate)
         if org == 'all':
             t = tweets.find({"date": {"$lt": start}, "date": {"$gt": end}})
         else:
             t = tweets.find({"username": org, "date": {"$lt": start}, "date": {"$gt": end}})
-        word_count = 0
         for tw in t:
+            date = tw['date'].replace('-', '/')
+            date_obj = datetime.strptime(date, '%Y/%m/%d')
             if word in tw['tweet']:
-                word_count+=1
-        return render_template('graph.html', word_count=word_count, word=word)
+                months_count[date_obj.month-1]+=1
+                    
+                days_count[date_obj.weekday()]+=1
+                
+                weeks_count[date_obj.isocalendar()[1]]+=1
+        if aggregate == 'month':
+            return render_template('graph_month.html', word_count=months_count, word=months, graph=graph)
+        if aggregate == 'week':
+            return render_template('graph_week.html', word_count=weeks_count, graph=graph)
+        if aggregate == 'day':
+            return render_template('graph_day.html', word_count=days_count, graph=graph)
+        #for tw in t:
+        #    if word in tw['tweet']:
+        #        word_count+=1
+        #return render_template('graph.html', word_count=word_count, word=word)
     else:
         return render_template('graph.html')
     #return str(tweet['tweet'])
