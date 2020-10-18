@@ -24,6 +24,14 @@ class Frequency:
         results = self.mongo.test.aggregate(aggregate="test", pipeline=self.month_pipeline)
         return results
 
+    # Function returns a JSON of total tweets per week for given dates
+    def get_week_total(self, username, search_keyword, date_from, date_until):
+        date_from = datetime.strptime(date_from, "%Y-%m-%d")
+        date_until = datetime.strptime(date_until, "%Y-%m-%d")
+        self.set_week_pipeline(username, search_keyword, date_from, date_until)
+        results = self.mongo.test.aggregate(aggregate="test", pipeline=self.week_pipeline)
+        return results
+
     # Function returns a JSON of total tweets per day for given dates
     def get_day_total(self, username, search_keyword, date_from, date_until):
         date_from = datetime.strptime(date_from, "%Y-%m-%d")
@@ -60,7 +68,7 @@ class Frequency:
             }
         ]
 
-    # Initialises the aggregation pipeline for year granularity
+    # Initialises the aggregation pipeline for month granularity
     def set_month_pipeline(self, username, keyword, date_from, date_until):
         self.month_pipeline = [
             {
@@ -70,8 +78,8 @@ class Frequency:
                 "$project":
                 {
                     "wholeDate": {"$dateFromString": {"dateString": "$date"}},
-                    "dateFrom": {"$dateFromString": {"dateString": date_from}},
-                    "dateUntil": {"$dateFromString": {"dateString": date_until}},
+                    "dateFrom": date_from,
+                    "dateUntil": date_until,
                     "year": {"$year": {"$dateFromString": {"dateString": "$date"}}},
                     "month": {"$month": {"$dateFromString": {"dateString": "$date"}}},
                 }
@@ -88,7 +96,36 @@ class Frequency:
             }
         ]
 
-    # Initialises the aggregation pipeline for year granularity
+    # Initialises the aggregation pipeline for week granularity
+    def set_week_pipeline(self, username, keyword, date_from, date_until):
+        self.week_pipeline = [
+            {
+                "$match": {"username": username, "$text": {"$search": keyword}}
+            },
+            {
+                "$project":
+                {
+                    "wholeDate": {"$dateFromString": {"dateString": "$date"}},
+                    "dateFrom": date_from,
+                    "dateUntil": date_until,
+                    "year": {"$year": {"$dateFromString": {"dateString": "$date"}}},
+                    "month": {"$month": {"$dateFromString": {"dateString": "$date"}}},
+                    "week": {"$toInt": {"$round": {"$divide": [{"$dayOfMonth": {"$dateFromString": {"dateString": "$date"}}}, 7]}}},
+                }
+            },
+            # {
+            #     "$match": {"wholeDate": {"$gte": "dateFrom", "$lte": "dateUntil"}}
+            # },
+            {
+                "$group":
+                {
+                    "_id": {"year": "$year", "month": "$month", "week": "$week"},
+                    "count": {"$sum": 1}
+                }
+            }
+        ]
+
+    # Initialises the aggregation pipeline for day granularity
     def set_day_pipeline(self, username, keyword, date_from, date_until):
         self.day_pipeline = [
             {
@@ -98,8 +135,8 @@ class Frequency:
                 "$project":
                 {
                     "wholeDate": {"$dateFromString": {"dateString": "$date"}},
-                    "dateFrom": {"$dateFromString": {"dateString": date_from}},
-                    "dateUntil": {"$dateFromString": {"dateString": date_until}},
+                    "dateFrom": date_from,
+                    "dateUntil": date_until,
                     "year": {"$year": {"$dateFromString": {"dateString": "$date"}}},
                     "month": {"$month": {"$dateFromString": {"dateString": "$date"}}},
                     "day": {"$dayOfMonth": {"$dateFromString": {"dateString": "$date"}}},
