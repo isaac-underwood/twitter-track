@@ -20,8 +20,25 @@ def index():
 
 # GET ROUTE - Get the graph page
 # POST ROUTE - Queried word/news outlet
-@app.route('/graph')
+@app.route('/graph', methods=['GET', 'POST'])
 def graph():
+    if request.method is 'POST':
+        granularity = request.form['aggregate']  # Granularity must be passed in as value from 0-3
+        username = request.form['news']
+        search_keyword = request.form['search']
+        date_from = request.form['start']
+        date_until = request.form['end']
+        graph = request.form['graph']
+
+        results = getTweetSearchWithDates(username, search_keyword,
+                                          granularity, dfrom, dto)
+        if granularity == "1":
+            return render_template('graph_month.html', word_count=results, graph=graph)
+        elif granularity == "2":
+            return render_template('graph_day.html', word_count=results, graph=graph)
+        else:
+            return render_template('graph_week.html', word_count=results, graph=graph)
+
     return render_template('graph.html')
 
 
@@ -46,24 +63,24 @@ def getTweetSearchNoDates(username, keyword, granularity):
     pass
 
 
-@app.route(
-    '/api/username/<string:username>/<string:keyword>/<string:granularity>/<string:dfrom>/<string:dto>',
-    methods=['GET'])
+# @app.route(
+#     '/api/username/<string:username>/<string:keyword>/<string:granularity>/<string:dfrom>/<string:dto>',
+#     methods=['GET'])
 def getTweetSearchWithDates(username, keyword, granularity, dfrom, dto):
     freq_conn = Frequency(mongo)
+    results = -1
     # YEAR GRANULARITY
     if granularity == "0":
         results = dumps(freq_conn.get_year_total(username, keyword, dfrom, dto))
-        return results, 200
     # MONTH GRANULARITY
     elif granularity == "1":
         results = dumps(freq_conn.get_month_total(username, keyword, dfrom, dto))
-        return results, 200
     # DAY GRANULARITY
     elif granularity == "2":
         results = dumps(freq_conn.get_day_total(username, keyword, dfrom, dto))
-        return results, 200
-    return 'Error: Check granularity parameters are correct', 404
+    elif granularity == "3":
+        results = dumps(freq_conn.get_week_total(username, keyword, dfrom, dto))
+    return results
 
 
 # Generic Search Routes
