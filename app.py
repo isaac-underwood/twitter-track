@@ -3,10 +3,12 @@ import twint
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from bson.json_util import dumps
+import datetime
+from frequencies import Frequency
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/test"
-mongo = PyMongo(app)
+mongo = MongoClient()
 tc = twint.Config()
 
 
@@ -37,16 +39,44 @@ def getTweetsByTimeline(username):
     return tweets_by_user_json, 200  # Return a success and tweets by username
 
 
+@app.route(
+    '/api/username/<string:username>/<string:keyword>/<string:granularity>',
+    methods=['GET'])
+def getTweetSearchNoDates(username, keyword, granularity):
+    pass
+
+
+@app.route(
+    '/api/username/<string:username>/<string:keyword>/<string:granularity>/<string:dfrom>/<string:dto>',
+    methods=['GET'])
+def getTweetSearchWithDates(username, keyword, granularity, dfrom, dto):
+    freq_conn = Frequency(mongo)
+    # YEAR GRANULARITY
+    if granularity == "0":
+        results = dumps(freq_conn.get_year_total(username, keyword, dfrom, dto))
+        return results, 200
+    # MONTH GRANULARITY
+    elif granularity == "1":
+        results = dumps(freq_conn.get_month_total(username, keyword, dfrom, dto))
+        return results, 200
+    # DAY GRANULARITY
+    elif granularity == "2":
+        results = dumps(freq_conn.get_day_total(username, keyword, dfrom, dto))
+        return results, 200
+    return 'Error: Check granularity parameters are correct', 404
+
+
 # Generic Search Routes
 
 # Returns all tweets in the database
-@app.route('/api/generic/', methods=['GET'])
+@app.route('/api/all/', methods=['GET'])
 def getAllTweets():
     all_tweets = mongo.db.test.find()  # Retrieve all objects in database
     all_tweets_json = dumps(all_tweets)
     if all_tweets_json == '[]':
         return all_tweets_json, 404
     return all_tweets_json, 200
+
 
 # Accepts a keyword (search term) to search all tweets
 @app.route('/api/generic/<string:keyword>')
