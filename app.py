@@ -43,10 +43,7 @@ def getTweetsByTimeline(username):
     '/api/username/<string:username>/<string:keyword>/<string:granularity>',
     methods=['GET'])
 def getTweetSearchNoDates(username, keyword, granularity):
-    return
-    #if granularity == 0:
-        #date_gran = 
-    #tweets_by_granularity = mongo.db.test.find({"username": username, "tweet": {"$search": keyword}, ""})
+    pass
 
 
 @app.route(
@@ -58,9 +55,11 @@ def getTweetSearchWithDates(username, keyword, granularity, dfrom, dto):
     if granularity == "0":
         results = dumps(freq_conn.get_year_total(username, keyword, dfrom, dto))
         return results, 200
+    # MONTH GRANULARITY
     elif granularity == "1":
         results = dumps(freq_conn.get_month_total(username, keyword, dfrom, dto))
         return results, 200
+    # DAY GRANULARITY
     elif granularity == "2":
         results = dumps(freq_conn.get_day_total(username, keyword, dfrom, dto))
         return results, 200
@@ -70,7 +69,7 @@ def getTweetSearchWithDates(username, keyword, granularity, dfrom, dto):
 # Generic Search Routes
 
 # Returns all tweets in the database
-@app.route('/api/generic/', methods=['GET'])
+@app.route('/api/all/', methods=['GET'])
 def getAllTweets():
     all_tweets = mongo.db.test.find()  # Retrieve all objects in database
     all_tweets_json = dumps(all_tweets)
