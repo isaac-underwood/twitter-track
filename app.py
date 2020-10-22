@@ -22,7 +22,7 @@ def index():
 # POST ROUTE - Queried word/news outlet
 @app.route('/graph', methods=['GET', 'POST'])
 def graph():
-    if request.method is 'POST':
+    if request.method == 'POST':
         granularity = request.form['aggregate']  # Granularity must be passed in as value from 0-3
         username = request.form['news']
         search_keyword = request.form['search']
@@ -63,9 +63,9 @@ def getTweetSearchNoDates(username, keyword, granularity):
     pass
 
 
-# @app.route(
-#     '/api/username/<string:username>/<string:keyword>/<string:granularity>/<string:dfrom>/<string:dto>',
-#     methods=['GET'])
+@app.route(
+    '/api/username/<string:username>/<string:keyword>/<string:granularity>/<string:dfrom>/<string:dto>',
+    methods=['GET'])
 def getTweetSearchWithDates(username, keyword, granularity, dfrom, dto):
     freq_conn = Frequency(mongo)
     results = -1
@@ -80,6 +80,7 @@ def getTweetSearchWithDates(username, keyword, granularity, dfrom, dto):
         results = dumps(freq_conn.get_day_total(username, keyword, dfrom, dto))
     elif granularity == "3":
         results = dumps(freq_conn.get_week_total(username, keyword, dfrom, dto))
+
     return results
 
 
