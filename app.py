@@ -6,6 +6,9 @@ from bson.json_util import dumps
 import datetime
 from frequencies import Frequency
 
+client = MongoClient('localhost', 27017)
+db = client.twitter
+tweets = db.tweets
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/test"
 mongo = MongoClient()
@@ -15,9 +18,12 @@ tc = twint.Config()
 # Loads home page
 @app.route('/')
 def index():
+    t = tweets.find_one()
+    date = t['date'].split("-")
+    print(date[0])
     return render_template('index.html')
 
-
+  
 # GET ROUTE - Get the graph page
 # POST ROUTE - Queried word/news outlet
 @app.route('/graph', methods=['GET', 'POST'])
@@ -40,7 +46,6 @@ def graph():
             return render_template('graph_week.html', word_count=results, graph=graph)
 
     return render_template('graph.html')
-
 
 # API ROUTES
 
