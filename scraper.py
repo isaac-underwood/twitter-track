@@ -34,7 +34,7 @@ def get_last_scraped(username):
 
         # Convert strftime to datetime
         last_date_time = datetime.strptime(dstring, '%Y%m%d-%H%M%S')
-        return last_date_time
+        return str(last_date_time)
     except ValueError:
         pass
 
@@ -55,7 +55,6 @@ def scrape_tweets(tc, username):
 
     tc.Username = username
     print(f'> Searching tweets by the user {username}')
-    tc.Limit = 15  # Only get a max of 15 tweets
     tw.run.Search(tc)
     print(f'> Search under {username} complete. Adding data to database')
     insert_data(tc.Output)
