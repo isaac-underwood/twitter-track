@@ -1,10 +1,11 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request, url_for
 import twint
 from flask_pymongo import PyMongo
 from pymongo import MongoClient
 from bson.json_util import dumps
 import datetime
 from frequencies import Frequency
+import os
 
 client = MongoClient('localhost', 27017)
 db = client.twitter
@@ -18,9 +19,6 @@ tc = twint.Config()
 # Loads home page
 @app.route('/')
 def index():
-    t = tweets.find_one()
-    date = t['date'].split("-")
-    print(date[0])
     return render_template('index.html')
 
   
@@ -28,7 +26,7 @@ def index():
 # POST ROUTE - Queried word/news outlet
 @app.route('/graph', methods=['GET', 'POST'])
 def graph():
-    if request.method is 'POST':
+    if request.method == 'POST':
         granularity = request.form['aggregate']  # Granularity must be passed in as value from 0-3
         username = request.form['news']
         search_keyword = request.form['search']
@@ -37,7 +35,7 @@ def graph():
         graph = request.form['graph']
 
         results = getTweetSearchWithDates(username, search_keyword,
-                                          granularity, dfrom, dto)
+                                          granularity, date_from, date_until)
         if granularity == "1":
             return render_template('graph_month.html', word_count=results, graph=graph)
         elif granularity == "2":
@@ -105,6 +103,23 @@ def getAllTweets():
 def twintGenericSearch(keyword):
     tc.Search = keyword  # Set search term in config
     twint.run.Search(tc)
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+# Adds a timestamp to static files so that browser uses updated CSS files
+# (Browser caching means that new css files aren't being used)
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
 
 if __name__ == '__main__':
