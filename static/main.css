@@ -1,19 +1,33 @@
+/* https://coolors.co/404e5c-4f6272-e0e1dd-e94f37-48beff
+*/
+
 body {
   font-family: 'Source Sans Pro', sans-serif;
   background-color: #EBEBEB;
 }
 
 nav {
-  background: #4F6272;
+  background: #48BEFF;
 }
 
-nav a.navbar-brand {
+nav a {
   color: #FFFFFC !important;
 }
 
-button.btn-primary {
+  nav a:hover {
+    transition-delay: 0.2s !important;
+    color: #eeeeee !important;
+    text-decoration: underline 1.5px !important;
+    text-underline-offset: 0.4em !important;
+  }
+
+nav a.nav-link {
+  font-size: 1.2em;
+}
+
+button.btn-primary, a.btn-primary {
   background-color: #48BEFF !important;
-  border-color: #48BEFF !important;
+  border-color: #40a8e0 !important;
   color: #FFFFFC !important;
 }
 
@@ -25,6 +39,15 @@ h1, h2, h3, h4, h5, h6 {
 h1.display-1, h1.display-2, .display-3 {
   font-weight: lighter !important;
 }
+
+.section.landing {
+  background-image: url('img/twitter-phone-close.jpg');
+  background-size: cover;
+}
+
+  .section.landing .landing-text {
+    color: #FFFFFC;
+  }
 
 /*
 *   Form Styles

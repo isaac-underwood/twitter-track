@@ -16,9 +16,14 @@ mongo = MongoClient()
 tc = twint.Config()
 
 
-# Loads home page
 @app.route('/')
 def index():
+    return render_template('landing.html')
+
+
+# Loads home page
+@app.route('/search')
+def search():
     return render_template('index.html')
 
   

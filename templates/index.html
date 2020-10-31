@@ -4,91 +4,91 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-  <div class="d-flex justify-content-md-center align-items-center">
-    <div class="col-md-8">
-      <h1 class="display-3 text-center">Twitter Track</h1>
-      <h5 class="text-muted text-center">Twitter Track uses a web scraper to scrape Tweets from media accounts on Twitter and produces a timeline using options you provide.</h5>
-      <h1 class="text-center">Search</h1>
-      <form action="{{ url_for('graph') }}">
-        <p class="text-muted">* fields are required.</p>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label class="control-label" for="search">Search Term(s)</label>
-            <input type="text" class="form-control" id="search" placeholder="e.g. cat">
-          </div>
-          <div class="form-group required col-md-6">
-           <label class="control-label" for="news">Twitter Account:</label>
-            <select name="news" id="news" class="form-control" required>
-              <option value="all">All</option>
-              <option value="cnn">CNN</option>
-              <option value="msnbc">MSNBC</option>
-              <option value="bbcnews">BBC</option>
-              <option value="wsj">Wall Street Journal</option>
-              <option value="foxnewsalert">Fox News</option>
-              <option value="nytimes">New York Times</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group required col-md-6">
-            <label class="control-label" for="end">Start Date</label>
-            <input type="date" id="start" name="start" class="form-control" required>
-          </div>
-          <div class="form-group required col-md-6">
-            <label class="control-label" for="start">End Date</label>
-            <input type="date" id="end" name="end" class="form-control" required>
-          </div>
-        </div>
-        <hr>
-        <div class="form-row">
-          <legend class="col-form-label required col-sm-2 pt-0">Frequency</legend>
-          <div class="form-group col-md-2">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" id="day" name="aggregate" value="day">
-              <label class="form-check-label" for="day">Day</label>
+<div id="fullpage">
+  <div class="section container-fluid">
+    <div class="d-flex justify-content-md-center align-items-center">
+      <div class="col-md-8">
+        <h1 class="display-3 text-center">Search</h1>
+        <form action="{{ url_for('graph') }}" method="POST">
+          <p class="text-muted">* fields are required.</p>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label class="control-label" for="search">Search Term(s)</label>
+              <input type="text" class="form-control" id="search" name="search" placeholder="e.g. cat">
+            </div>
+            <div class="form-group required col-md-6">
+            <label class="control-label" for="news">Twitter Account:</label>
+              <select name="news" id="news" class="form-control" required>
+                <option value="all">All</option>
+                <option value="cnn">CNN</option>
+                <option value="msnbc">MSNBC</option>
+                <option value="bbcnews">BBC</option>
+                <option value="wsj">Wall Street Journal</option>
+                <option value="foxnewsalert">Fox News</option>
+                <option value="nytimes">New York Times</option>
+              </select>
             </div>
           </div>
-          <div class="form-group col-md-2">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" id="week" name="aggregate" value="week">
-              <label class="form-check-label" for="week">Week</label>
+          <div class="form-row">
+            <div class="form-group required col-md-6">
+              <label class="control-label" for="end">Start Date</label>
+              <input type="date" id="start" name="start" class="form-control" required>
+            </div>
+            <div class="form-group required col-md-6">
+              <label class="control-label" for="start">End Date</label>
+              <input type="date" id="end" name="end" class="form-control" required>
             </div>
           </div>
-          <div class="form-group col-md-2">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" id="month" name="aggregate" value="month" checked>
-              <label class="form-check-label" for="month">Month</label>
+          <hr>
+          <div class="form-row">
+            <legend class="col-form-label required col-sm-2 pt-0">Frequency</legend>
+            <div class="form-group col-md-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="day" name="aggregate" value="day">
+                <label class="form-check-label" for="day">Day</label>
+              </div>
+            </div>
+            <div class="form-group col-md-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="week" name="aggregate" value="week">
+                <label class="form-check-label" for="week">Week</label>
+              </div>
+            </div>
+            <div class="form-group col-md-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="month" name="aggregate" value="month" checked>
+                <label class="form-check-label" for="month">Month</label>
+              </div>
             </div>
           </div>
-        </div>
 
-        <!-- Graph Type -->
-        <div class="form-row">
-          <legend class="col-form-label required col-sm-2 pt-0">Graph Type</legend>
-          <div class="form-group col-md-2">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" id="bar" name="graph" value="bar" checked>
-              <label class="form-check-label" for="bar">Bar</label>
+          <!-- Graph Type -->
+          <div class="form-row">
+            <legend class="col-form-label required col-sm-2 pt-0">Graph Type</legend>
+            <div class="form-group col-md-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="bar" name="graph" value="bar" checked>
+                <label class="form-check-label" for="bar">Bar</label>
+              </div>
+            </div>
+            <div class="form-group col-md-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="line" name="graph" value="line">
+                <label class="form-check-label" for="line">Line</label>
+              </div>  
             </div>
           </div>
-          <div class="form-group col-md-2">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" id="line" name="graph" value="line">
-              <label class="form-check-label" for="line">Line</label>
-            </div>  
+          <hr>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <button type="reset" class="btn btn-lg btn-danger"><i class="fas fa-times pr-2"></i>Reset</button>
+            </div>
+            <div class="form-group col-md-6 text-right">
+              <button type="submit" class="btn btn-lg btn-primary">Show Graph<i class="fas fa-arrow-right pl-2"></i></button>
+            </div>
           </div>
-        </div>
-        <hr>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <button type="reset" class="btn btn-lg btn-danger"><i class="fas fa-times pr-2"></i>Reset</button>
-          </div>
-          <div class="form-group col-md-6 text-right">
-            <button type="submit" class="btn btn-lg btn-primary">Show Graph<i class="fas fa-arrow-right pl-2"></i></button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>
