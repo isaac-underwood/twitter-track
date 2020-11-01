@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Graph{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+    <div class="wrapper">
+      <h1>Word Count</h1>
+	<canvas id="myChart" width="400" height="100"></canvas>
+    </div>
+<script>
+var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+    type: '{{graph}}',
+    data: {
+        labels: ['1','2','3','4','5','6','7','8','9','10',
+		'11','12','13','14','15','16','17','18','19','20',
+		'21','22','23','24','25','26','27','28','29','30',
+		'31','32','33','34','35','36','37','38','39','40',
+		'41','42','43','44','45','46','47','48','49','50',
+		'51','52'],
+        datasets: [{
+            label: '# of Words',
+            data: [{% for item in word_count %}
+				{{item}},
+			{% endfor %}],
+			backgroundColor: [
+				{% for item in word_count %}
+				'rgba(216, 27, 96, 0.6)',
+				{% endfor %}
+            ],
+            borderColor: [
+				{% for item in word_count %}
+				'rgba(216, 27, 96, 1)',
+				{% endfor %}
+            ],
+			borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
+{% endblock %}

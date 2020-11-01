@@ -1,0 +1,35 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: #EBEBEB;
+}
+
+nav {
+  background: #4F6272;
+}
+
+nav a.navbar-brand {
+  color: #FFFFFC !important;
+}
+
+button.btn-primary {
+  background-color: #48BEFF !important;
+  border-color: #48BEFF !important;
+  color: #FFFFFC !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oxygen', sans-serif;
+  color: #384450;
+}
+
+h1.display-1, h1.display-2, .display-3 {
+  font-weight: lighter !important;
+}
+
+/*
+*   Form Styles
+*/
+/* Adds an asterisk to required form field's labels */
+.form-group.required .control-label::after, legend.required::after {
+    content:" *";
+  }
