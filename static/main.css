@@ -1,6 +1,5 @@
 /* https://coolors.co/404e5c-4f6272-e0e1dd-e94f37-48beff
 */
-
 body {
   font-family: 'Source Sans Pro', sans-serif;
   background-color: #EBEBEB;
@@ -28,8 +27,17 @@ nav a.nav-link {
 button.btn-primary, a.btn-primary {
   background-color: #48BEFF !important;
   border-color: #40a8e0 !important;
+}
+
+nav a.navbar-brand {
   color: #FFFFFC !important;
 }
+
+/*button.btn-primary {
+  background-color: #48BEFF !important;
+  border-color: #48BEFF !important;
+  color: #FFFFFC !important;
+}*/
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Oxygen', sans-serif;
