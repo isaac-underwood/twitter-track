@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, jsonify, request, url_for
 import twint
 from pymongo import MongoClient
+from bson.json_util import dumps
+from frequencies import Frequency
+import os
 from datetime import datetime
 
 client = MongoClient('localhost', 27017)
@@ -12,9 +15,12 @@ tc = twint.Config()
 
 @app.route('/')
 def index():
-    t = tweets.find_one()
-    date = t['date'].split("-")
-    print(date[0])
+    return render_template('landing.html')
+
+
+# Loads home page
+@app.route('/search')
+def search():
     return render_template('index.html')
 
 
@@ -62,7 +68,6 @@ def graph():
         return render_template('graph_year.html')
     # return str(tweet['tweet'])
 
-
 # API ROUTES
 
 # Username Routes (for getting tweets via username)
@@ -90,6 +95,23 @@ def twintTimeline(username, keyword=None):
 def twintGenericSearch(keyword):
     tc.Search = keyword  # Set search term in config
     twint.run.Search(tc)
+
+
+@app.context_processor
+def override_url_for():
+    return dict(url_for=dated_url_for)
+
+
+# Adds a timestamp to static files so that browser uses updated CSS files
+# (Browser caching means that new css files aren't being used)
+def dated_url_for(endpoint, **values):
+    if endpoint == 'static':
+        filename = values.get('filename', None)
+        if filename:
+            file_path = os.path.join(app.root_path,
+                                     endpoint, filename)
+            values['q'] = int(os.stat(file_path).st_mtime)
+    return url_for(endpoint, **values)
 
 
 if __name__ == '__main__':
