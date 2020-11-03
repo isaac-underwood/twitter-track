@@ -4,10 +4,15 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-    <div class="wrapper">
-      <h1>Word Count</h1>
-	<canvas id="myChart" width="400" height="100"></canvas>
+<div id="fullpage">
+    <div class="section container-fluid graph-section text-center">
+        <h1>Week Timeline</h1>
+        <h6 class="text-muted">{{ qt }}</h6>
+        <div class="chart-container mx-auto">
+            <canvas id="myChart" responsive=true maintainAspectRatio=false></canvas>
+        </div>
     </div>
+</div>
 <script>
 var ctx = document.getElementById('myChart');
 var myChart = new Chart(ctx, {
@@ -20,7 +25,7 @@ var myChart = new Chart(ctx, {
 		'41','42','43','44','45','46','47','48','49','50',
 		'51','52'],
         datasets: [{
-            label: '# of Words',
+            label: '# of Tweets',
             data: [{% for item in word_count %}
 				{{item}},
 			{% endfor %}],
@@ -30,11 +35,16 @@ var myChart = new Chart(ctx, {
 				{% endfor %}
             ],
             borderColor: [
-				{% for item in word_count %}
-				'rgba(216, 27, 96, 1)',
-				{% endfor %}
+                {% if graph == "bar" %}
+                    {% for item in word_count %}
+                    'rgba(216, 27, 96, 1)',
+                    {% endfor %}
+                {% else %}
+                'rgba(0, 0, 0, 1)',
+                {% endif %}
             ],
-			borderWidth: 1
+			borderWidth: 1,
+            fill: false
         }]
     },
     options: {
@@ -48,4 +58,6 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
+<!-- Set whether content is vertically centred -->
+{% block vcentered %}false{% endblock %}
 {% endblock %}

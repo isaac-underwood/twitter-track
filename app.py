@@ -40,30 +40,43 @@ def graph():
         end = request.form['start']
         start = request.form['end']
         graph = request.form['graph']
+
+        queried_title = f'"{word}" — {org} — {end} - {start}'
+
         if org == 'all':
-            t = tweets.find({"date": {"$lt": start}, "date": {"$gt": end}})
+            t = tweets.find({"$text": {"$search": word}, "date": {"$lt": start}, "date": {"$gt": end}})
         else:
-            t = tweets.find({"username": org, "date": {"$lt": start}, "date": {"$gt": end}})
+            t = tweets.find({"$text": {"$search": word}, "username": org, "date": {"$lt": start}, "date": {"$gt": end}})
         for tw in t:
             date = tw['date'].replace('-', '/')
             date_obj = datetime.strptime(date, '%Y/%m/%d')
-            if word in tw['tweet']:
-                if aggregate == 'month':
-                    months_count[date_obj.month-1]+=1
-                if aggregate == 'day':
-                    days_count[date_obj.weekday()]+=1
-                if aggregate == 'week':
-                    weeks_count[date_obj.isocalendar()[1]-1]+=1
-                if aggregate == 'year':
-                    years_count[date_obj.year%2011]+=1
+            if aggregate == 'month':
+                months_count[date_obj.month-1]+=1
+            if aggregate == 'day':
+                days_count[date_obj.weekday()]+=1
+            if aggregate == 'week':
+                weeks_count[date_obj.isocalendar()[1]-2]+=1
+            if aggregate == 'year':
+                years_count[date_obj.year%2011]+=1
+            # date = tw['date'].replace('-', '/')
+            # date_obj = datetime.strptime(date, '%Y/%m/%d')
+            # if word in tw['tweet']:
+            #     if aggregate == 'month':
+            #         months_count[date_obj.month-1]+=1
+            #     if aggregate == 'day':
+            #         days_count[date_obj.weekday()]+=1
+            #     if aggregate == 'week':
+            #         weeks_count[date_obj.isocalendar()[1]-1]+=1
+            #     if aggregate == 'year':
+            #         years_count[date_obj.year%2011]+=1
         if aggregate == 'month':
-            return render_template('graph_month.html', word_count=months_count, word=months, graph=graph)
+            return render_template('graph_month.html', word_count=months_count, word=months, graph=graph, qt=queried_title)
         if aggregate == 'week':
-            return render_template('graph_week.html', word_count=weeks_count, graph=graph)
+            return render_template('graph_week.html', word_count=weeks_count, graph=graph, qt=queried_title)
         if aggregate == 'day':
-            return render_template('graph_day.html', word_count=days_count, graph=graph)
+            return render_template('graph_day.html', word_count=days_count, graph=graph, qt=queried_title)
         if aggregate == 'year':
-            return render_template('graph_year.html', word_count=years_count, graph=graph)
+            return render_template('graph_year.html', word_count=years_count, graph=graph, qt=queried_title)
     else:
         return render_template('graph_year.html')
     # return str(tweet['tweet'])

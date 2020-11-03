@@ -4,51 +4,63 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-    <div class="wrapper">
-      <h1>Word Count</h1>
-	<canvas id="myChart" width="400" height="100"></canvas>
+<div id="fullpage">
+    <div class="section container-fluid graph-section text-center">
+        <h1>Day Timeline</h1>
+        <h6 class="text-muted">{{ qt }}</h6>
+        <div class="chart-container mx-auto">
+            <canvas id="myChart" responsive=true maintainAspectRatio=false></canvas>
+        </div>
     </div>
-<script>
-var ctx = document.getElementById('myChart');
-var myChart = new Chart(ctx, {
-    type: '{{graph}}',
-    data: {
-        labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-        datasets: [{
-            label: '# of Words',
-            data: [{% for item in word_count %}
-				{{item}},
-			{% endfor %}],
-			backgroundColor: [
-                'rgba(216, 27, 96, 0.6)',
-                'rgba(3, 169, 244, 0.6)',
-                'rgba(255, 152, 0, 0.6)',
-                'rgba(29, 233, 182, 0.6)',
-                'rgba(156, 39, 176, 0.6)',
-                'rgba(84, 110, 122, 0.6)',
-				'rgba(216, 27, 96, 0.6)'
-            ],
-            borderColor: [
-                'rgba(216, 27, 96, 1)',
-                'rgba(3, 169, 244, 1)',
-                'rgba(255, 152, 0, 1)',
-                'rgba(29, 233, 182, 1)',
-                'rgba(156, 39, 176, 1)',
-                'rgba(84, 110, 122, 1)',
-				'rgba(216, 27, 96, 1)'
-            ],
-			borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
+</div>
+    <script>
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: '{{graph}}',
+        data: {
+            labels: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+            datasets: [{
+                label: '# of Tweets',
+                data: [{% for item in word_count %}
+                    {{item}},
+                {% endfor %}],
+                backgroundColor: [
+                    'rgba(216, 27, 96, 0.6)',
+                    'rgba(3, 169, 244, 0.6)',
+                    'rgba(255, 152, 0, 0.6)',
+                    'rgba(29, 233, 182, 0.6)',
+                    'rgba(156, 39, 176, 0.6)',
+                    'rgba(84, 110, 122, 0.6)',
+                    'rgba(216, 27, 96, 0.6)'
+                ],
+                borderColor: [
+                    {% if graph == "bar" %}
+                    'rgba(216, 27, 96, 1)',
+                    'rgba(3, 169, 244, 1)',
+                    'rgba(255, 152, 0, 1)',
+                    'rgba(29, 233, 182, 1)',
+                    'rgba(156, 39, 176, 1)',
+                    'rgba(84, 110, 122, 1)',
+                    'rgba(216, 27, 96, 1)'
+                    {% else %}
+                    'rgba(0, 0, 0, 1)',
+                    {% endif %}
+                ],
+                borderWidth: 1,
+                fill: false
             }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
-    }
-});
-</script>
+    });
+    </script>
+<!-- Set whether content is vertically centred -->
+{% block vcentered %}false{% endblock %}
 {% endblock %}

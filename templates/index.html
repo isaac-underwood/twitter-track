@@ -22,9 +22,9 @@
                 <option value="all">All</option>
                 <option value="cnn">CNN</option>
                 <option value="msnbc">MSNBC</option>
-                <option value="bbcnews">BBC</option>
+                <option value="bbc">BBC</option>
                 <option value="wsj">Wall Street Journal</option>
-                <option value="foxnewsalert">Fox News</option>
+                <option value="foxnews">Fox News</option>
                 <option value="nytimes">New York Times</option>
               </select>
             </div>
@@ -56,8 +56,14 @@
             </div>
             <div class="form-group col-md-2">
               <div class="form-check">
-                <input class="form-check-input" type="radio" id="month" name="aggregate" value="month" checked>
+                <input class="form-check-input" type="radio" id="month" name="aggregate" value="month">
                 <label class="form-check-label" for="month">Month</label>
+              </div>
+            </div>
+            <div class="form-group col-md-2">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="year" name="aggregate" value="year" checked>
+                <label class="form-check-label" for="year">Year</label>
               </div>
             </div>
           </div>
@@ -92,4 +98,6 @@
     </div>
   </div>
 </div>
+<!-- Set whether content is vertically centred -->
+{% block vcentered %}true{% endblock %}
 {% endblock %}

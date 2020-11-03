@@ -49,13 +49,22 @@ h1.display-1, h1.display-2, .display-3 {
 }
 
 .section.landing {
-  background-image: url('img/twitter-phone-close.jpg');
+  background-image: url('img/twitter-phone-box.jpg');
   background-size: cover;
 }
 
   .section.landing .landing-text {
     color: #FFFFFC;
   }
+
+.section.graph-section {
+}
+
+.chart-container {
+  max-width: 75vw !important;
+  max-height: 33vh !important;
+
+}
 
 /*
 *   Form Styles
