@@ -4,16 +4,37 @@
     {% block head %}
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-	<link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Oxygen&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/c46bbd3096.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.9/fullpage.css" integrity="sha512-1No3nMY/zD37h1POyqULfwc9WMzWvXcal6F7/OIhNdWkTaEbt4Y6eqX0vXail7Zh5JjnBdMMKr+lRvqTNFr3Ow==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.9/fullpage.min.js" integrity="sha512-Gx/C4x1qubng2MWpJIxTPuWch9O88dhFFfpIl3WlqH0jPHtCiNdYsmJBFX0q5gIzFHmwkPzzYTlZC/Q7zgbwCw==" crossorigin="anonymous"></script>
     <title>{% block title %}{% endblock %} - My Webpage</title>
     {% endblock %}
   </head>
   <body>
+    <nav class="navbar justify-content-center navbar-dark px-5">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Twitter Track</a>
+      <ul class="nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('search') }}">Search<i class="fas fa-search pl-2 fa-sm"></i></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link gh-icon" href="https://github.com/drozado/twitter-track" target="_blank"><i class="fab fa-github"></i></a>
+        </li>
+      </ul>
+    </nav>
     <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
-      {% block footer %}
-      <p>Twitter App</p>
-      {% endblock %}
-    </div>
+    <script>
+      new fullpage('#fullpage', {
+    //options here
+    autoScrolling:true,
+    scrollHorizontally: true,
+    verticalCentered: {% block vcentered %}{% endblock %},
+    responsiveSlides: true,
+    licenseKey: '4EABA41D-FAE8499F-AEDA006E-104BDDC3',
+  });
+  </script>
   </body>
 </html>

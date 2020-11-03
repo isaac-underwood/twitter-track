@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block title %}Graph{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div id="fullpage">
+    <div class="section container-fluid graph-section text-center">
+        <h1>Year Timeline</h1>
+        <h6 class="text-muted">{{ qt }}</h6>
+        <div class="chart-container mx-auto">
+            <canvas id="myChart" responsive=true maintainAspectRatio=false></canvas>
+        </div>
+    </div>
+</div>
+<script>
+var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+    type: '{{graph}}',
+    data: {
+        labels: ['2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020'],
+        datasets: [{
+            label: '# of Tweets',
+            data: [{% for item in word_count %}
+				{{item}},
+			{% endfor %}],
+			backgroundColor: [
+                'rgba(216, 27, 96, 0.6)',
+                'rgba(3, 169, 244, 0.6)',
+                'rgba(255, 152, 0, 0.6)',
+                'rgba(29, 233, 182, 0.6)',
+                'rgba(156, 39, 176, 0.6)',
+                'rgba(84, 110, 122, 0.6)',
+				'rgba(216, 27, 96, 0.6)',
+                'rgba(3, 169, 244, 0.6)',
+                'rgba(255, 152, 0, 0.6)',
+                'rgba(29, 233, 182, 0.6)',
+            ],
+            borderColor: [
+                {% if graph == "bar" %}
+                'rgba(216, 27, 96, 1)',
+                'rgba(3, 169, 244, 1)',
+                'rgba(255, 152, 0, 1)',
+                'rgba(29, 233, 182, 1)',
+                'rgba(156, 39, 176, 1)',
+                'rgba(84, 110, 122, 1)',
+				'rgba(216, 27, 96, 1)',
+                'rgba(3, 169, 244, 1)',
+                'rgba(255, 152, 0, 1)',
+                'rgba(29, 233, 182, 1)',
+                {% else %}
+                'rgba(0, 0, 0, 1)',
+                {% endif %}
+            ],
+			borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
+<!-- Set whether content is vertically centred -->
+{% block vcentered %}false{% endblock %}
+{% endblock %}

@@ -1,0 +1,75 @@
+/* https://coolors.co/404e5c-4f6272-e0e1dd-e94f37-48beff
+*/
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: #EBEBEB;
+}
+
+nav {
+  background: #48BEFF;
+}
+
+nav a {
+  color: #FFFFFC !important;
+}
+
+  nav a:hover {
+    transition-delay: 0.2s !important;
+    color: #eeeeee !important;
+    text-decoration: underline 1.5px !important;
+    text-underline-offset: 0.4em !important;
+  }
+
+nav a.nav-link {
+  font-size: 1.2em;
+}
+
+button.btn-primary, a.btn-primary {
+  background-color: #48BEFF !important;
+  border-color: #40a8e0 !important;
+}
+
+nav a.navbar-brand {
+  color: #FFFFFC !important;
+}
+
+/*button.btn-primary {
+  background-color: #48BEFF !important;
+  border-color: #48BEFF !important;
+  color: #FFFFFC !important;
+}*/
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oxygen', sans-serif;
+  color: #384450;
+}
+
+h1.display-1, h1.display-2, .display-3 {
+  font-weight: lighter !important;
+}
+
+.section.landing {
+  background-image: url('img/twitter-phone-box.jpg');
+  background-size: cover;
+}
+
+  .section.landing .landing-text {
+    color: #FFFFFC;
+  }
+
+.section.graph-section {
+}
+
+.chart-container {
+  max-width: 75vw !important;
+  max-height: 33vh !important;
+
+}
+
+/*
+*   Form Styles
+*/
+/* Adds an asterisk to required form field's labels */
+.form-group.required .control-label::after, legend.required::after {
+    content:" *";
+  }
