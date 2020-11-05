@@ -4,6 +4,12 @@
 ### Built With
 
 * [Flask](https://flask.palletsprojects.com/)
+* [MongoDB](https://www.mongodb.com/)
+* [Twint](https://github.com/twintproject/twint)
+* [Pymongo](https://pymongo.readthedocs.io/en/stable/)
+* [Chart.js](https://www.chartjs.org/)
+* [Bootstrap](https://getbootstrap.com/)
+* [Fullpage](https://alvarotrigo.com/fullPage/)
 
 
 ## Getting Started
