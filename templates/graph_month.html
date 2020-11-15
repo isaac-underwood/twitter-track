@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+{% block title %}Graph{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div id="fullpage">
+    <div class="section container-fluid graph-section text-center">
+        <h1>Month Timeline</h1>
+        <h6 class="text-muted">{{ qt }}</h6>
+        <div class="chart-container mx-auto">
+            <canvas id="myChart" responsive=true maintainAspectRatio=false></canvas>
+        </div>
+    </div>
+</div>
+<script>
+    {% if sentiment == 'Positive' %}
+        var backgroundCol = 'rgba(14, 240, 48, 0.8)';
+    {% elif sentiment == 'Negative' %}
+        var backgroundCol = 'rgba(184, 0, 0, 0.8)';
+    {% else %}
+        var backgroundCol = 'rgba(0, 0, 0, 1)';
+    {% endif %}
+var ctx = document.ge
+var ctx = document.getElementById('myChart');
+var myChart = new Chart(ctx, {
+    type: '{{graph}}',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+            label: '# of {{sentiment}} Tweets',
+            data: [
+                {% for item in word_count %}
+				    {{item}},
+			    {% endfor %}],
+            {% if graph == "bar" %}
+			backgroundColor: [
+                'rgba(216, 27, 96, 0.6)',
+                'rgba(3, 169, 244, 0.6)',
+                'rgba(255, 152, 0, 0.6)',
+                'rgba(29, 233, 182, 0.6)',
+                'rgba(156, 39, 176, 0.6)',
+                'rgba(84, 110, 122, 0.6)',
+				'rgba(216, 27, 96, 0.6)',
+                'rgba(3, 169, 244, 0.6)',
+                'rgba(255, 152, 0, 0.6)',
+                'rgba(29, 233, 182, 0.6)',
+                'rgba(156, 39, 176, 0.6)',
+                'rgba(84, 110, 122, 0.6)'
+            ],
+            borderColor: [
+                'rgba(216, 27, 96, 1)',
+                'rgba(3, 169, 244, 1)',
+                'rgba(255, 152, 0, 1)',
+                'rgba(29, 233, 182, 1)',
+                'rgba(156, 39, 176, 1)',
+                'rgba(84, 110, 122, 1)',
+				'rgba(216, 27, 96, 1)',
+                'rgba(3, 169, 244, 1)',
+                'rgba(255, 152, 0, 1)',
+                'rgba(29, 233, 182, 1)',
+                'rgba(156, 39, 176, 1)',
+                'rgba(84, 110, 122, 1)'
+            ],
+            {% else %}
+            backgroundColor: backgroundCol,
+            borderColor: backgroundCol,
+            {% endif %}
+			borderWidth: 1,
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+        tooltips: {
+            enabled: true,
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    return label;
+                },
+                labelColor: (tooltipItem, chart) => {
+                    return {
+                        backgroundColor: backgroundCol,
+                        borderColor: backgroundCol,
+                    };
+                },
+                labelTextColor: (tooltipItem, chart) => {
+                    return '#543453';
+                }
+            }
+        }
+    }
+});
+</script>
+<!-- Set whether content is vertically centred -->
+{% block vcentered %}false{% endblock %}
+{% endblock %}
