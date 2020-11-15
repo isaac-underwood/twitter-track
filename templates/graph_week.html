@@ -14,6 +14,14 @@
     </div>
 </div>
 <script>
+    {% if sentiment == 'Positive' %}
+        var backgroundCol = 'rgba(14, 240, 48, 0.8)';
+    {% elif sentiment == 'Negative' %}
+        var backgroundCol = 'rgba(184, 0, 0, 0.8)';
+    {% else %}
+        var backgroundCol = 'rgba(0, 0, 0, 1)';
+    {% endif %}
+var ctx = document.ge
 var ctx = document.getElementById('myChart');
 var myChart = new Chart(ctx, {
     type: '{{graph}}',
@@ -25,24 +33,25 @@ var myChart = new Chart(ctx, {
 		'41','42','43','44','45','46','47','48','49','50',
 		'51','52'],
         datasets: [{
-            label: '# of Tweets',
+            label: '# of {{sentiment}} Tweets',
             data: [{% for item in word_count %}
 				{{item}},
 			{% endfor %}],
+            {% if graph == "bar" %}
 			backgroundColor: [
 				{% for item in word_count %}
 				'rgba(216, 27, 96, 0.6)',
 				{% endfor %}
             ],
             borderColor: [
-                {% if graph == "bar" %}
-                    {% for item in word_count %}
+                {% for item in word_count %}
                     'rgba(216, 27, 96, 1)',
-                    {% endfor %}
-                {% else %}
-                'rgba(0, 0, 0, 1)',
-                {% endif %}
+                {% endfor %}
             ],
+            {% else %}
+            backgroundColor: backgroundCol,
+            borderColor: backgroundCol,
+            {% endif %}
 			borderWidth: 1,
             fill: false
         }]
@@ -54,6 +63,29 @@ var myChart = new Chart(ctx, {
                     beginAtZero: true
                 }
             }]
+        },
+        tooltips: {
+            enabled: true,
+            callbacks: {
+                label: (tooltipItem, data) => {
+                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                    if (label) {
+                        label += ': ';
+                    }
+                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    return label;
+                },
+                labelColor: (tooltipItem, chart) => {
+                    return {
+                        backgroundColor: backgroundCol,
+                        borderColor: backgroundCol,
+                    };
+                },
+                labelTextColor: (tooltipItem, chart) => {
+                    return '#543453';
+                }
+            }
         }
     }
 });
