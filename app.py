@@ -5,6 +5,7 @@ from bson.json_util import dumps
 from frequencies import Frequency
 import os
 from datetime import datetime
+import numpy as np
 
 client = MongoClient('localhost', 27017)
 db = client.test
@@ -30,10 +31,9 @@ def graph():
         days_count = [0, 0, 0, 0, 0, 0, 0]
         months = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December']
-        months_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        weeks_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        years_count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        months_count = np.zeros((12), dtype=int)
+        weeks_count = np.zeros((52), dtype=int)
+        years_count = np.zeros((16,), dtype=int)
         aggregate = request.form['aggregate']
         org = request.form['news']
         word = request.form['search']
@@ -41,12 +41,24 @@ def graph():
         start = request.form['end']
         graph = request.form['graph']
 
+        sentiment_value = ''
+        if 'sentiment-switch' in request.form:
+            sentiment_enabled = request.form['sentiment-switch']
+            if sentiment_enabled == "on":
+                sentiment_value = request.form['sentimentv']
+
         queried_title = f'"{word}" — {org} — {end} - {start}'
 
         if org == 'all':
-            t = tweets.find({"$text": {"$search": word}, "date": {"$lt": start}, "date": {"$gt": end}})
+            if sentiment_value != '':
+                t = tweets.find({"$text": {"$search": word}, "sentiment_label": sentiment_value.upper(), "date": {"$lt": start}, "date": {"$gt": end}})
+            else:
+                t = tweets.find({"$text": {"$search": word}, "date": {"$lt": start}, "date": {"$gt": end}})
         else:
-            t = tweets.find({"$text": {"$search": word}, "username": org, "date": {"$lt": start}, "date": {"$gt": end}})
+            if sentiment_value != '':
+                t = tweets.find({"$text": {"$search": word}, "username": org, "sentiment_label": sentiment_value.upper(), "date": {"$lt": start}, "date": {"$gt": end}})
+            else:
+                t = tweets.find({"$text": {"$search": word}, "username": org, "date": {"$lt": start}, "date": {"$gt": end}})
         for tw in t:
             date = tw['date'].replace('-', '/')
             date_obj = datetime.strptime(date, '%Y/%m/%d')
@@ -57,7 +69,8 @@ def graph():
             if aggregate == 'week':
                 weeks_count[date_obj.isocalendar()[1]-2]+=1
             if aggregate == 'year':
-                years_count[date_obj.year%2011]+=1
+                # print(date_obj.year%2009)
+                years_count[date_obj.year%2005]+=1
             # date = tw['date'].replace('-', '/')
             # date_obj = datetime.strptime(date, '%Y/%m/%d')
             # if word in tw['tweet']:
@@ -70,13 +83,13 @@ def graph():
             #     if aggregate == 'year':
             #         years_count[date_obj.year%2011]+=1
         if aggregate == 'month':
-            return render_template('graph_month.html', word_count=months_count, word=months, graph=graph, qt=queried_title)
+            return render_template('graph_month.html', word_count=months_count, word=months, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
         if aggregate == 'week':
-            return render_template('graph_week.html', word_count=weeks_count, graph=graph, qt=queried_title)
+            return render_template('graph_week.html', word_count=weeks_count, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
         if aggregate == 'day':
-            return render_template('graph_day.html', word_count=days_count, graph=graph, qt=queried_title)
+            return render_template('graph_day.html', word_count=days_count, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
         if aggregate == 'year':
-            return render_template('graph_year.html', word_count=years_count, graph=graph, qt=queried_title)
+            return render_template('graph_year.html', word_count=years_count, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
     else:
         return render_template('graph_year.html')
     # return str(tweet['tweet'])
