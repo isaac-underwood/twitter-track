@@ -73,3 +73,17 @@ h1.display-1, h1.display-2, .display-3 {
 .form-group.required .control-label::after, legend.required::after {
     content:" *";
   }
+
+.sentiment-field {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+input[type="radio"]:checked ~ .sentiment-field,
+input[type="checkbox"]:checked ~ .sentiment-field {
+  opacity: 1;
+  max-height: 100px; /* little bit of a magic number :( */
+  overflow: visible;
+  transform: scale(1);
+}
