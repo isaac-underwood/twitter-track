@@ -29,7 +29,7 @@ class Frequency:
         date_from = datetime.strptime(date_from, "%Y-%m-%d")
         date_until = datetime.strptime(date_until, "%Y-%m-%d")
         self.set_week_pipeline(search_keyword, date_from, date_until, username)
-        results = self.mongo.test.aggregate(aggregate="test", pipeline=self.week_pipeline)
+        results = self.mongo.test.aggregate(aggregate="test", pipeline=self.week_pipeline, allowDiskUse=True)
         return results
 
     # Function returns a JSON of total tweets per day for given dates
@@ -37,7 +37,7 @@ class Frequency:
         date_from = datetime.strptime(date_from, "%Y-%m-%d")
         date_until = datetime.strptime(date_until, "%Y-%m-%d")
         self.set_day_pipeline(search_keyword, date_from, date_until, username)
-        results = self.mongo.test.aggregate(aggregate="test", pipeline=self.day_pipeline)
+        results = self.mongo.test.aggregate(aggregate="test", pipeline=self.day_pipeline, allowDiskUse=True)
         return results
 
     # Initialises the aggregation pipeline for year granularity
@@ -45,9 +45,9 @@ class Frequency:
         # Check if a username has been passed in, if not do not filter on username
         match = {}
         if username is None:
-            match = {"$match": {"$text": {"$search": keyword}}}
+            match = {"$match": {"$text": {"$search": f'\"{keyword}\"'}}}
         else:
-            match = {"$match": {"username": username, "$text": {"$search": keyword}}}
+            match = {"$match": {"username": username, "$text": {"$search": f'\"{keyword}\"'}}}
         self.year_pipeline = [
             match,  # The match filter (either containing username filter or not)
             {
@@ -104,9 +104,9 @@ class Frequency:
         # Check if a username has been passed in, if not do not filter on username
         match = {}
         if username is None:
-            match = {"$match": {"$text": {"$search": keyword}}}
+            match = {"$match": {"$text": {"$search": f'\"{keyword}\"'}}}
         else:
-            match = {"$match": {"username": username, "$text": {"$search": keyword}}}
+            match = {"$match": {"username": username, "$text": {"$search": f'\"{keyword}\"'}}}
         self.month_pipeline = [
             match,  # The match filter (either containing username filter or not)
             {
@@ -165,9 +165,9 @@ class Frequency:
         # Check if a username has been passed in, if not do not filter on username
         match = {}
         if username is None:
-            match = {"$match": {"$text": {"$search": keyword}}}
+            match = {"$match": {"$text": {"$search": f'\"{keyword}\"'}}}
         else:
-            match = {"$match": {"username": username, "$text": {"$search": keyword}}}
+            match = {"$match": {"username": username, "$text": {"$search": f'\"{keyword}\"'}}}
         self.week_pipeline = [
             match,  # The match filter (either containing username filter or not)
             {
@@ -223,9 +223,9 @@ class Frequency:
         # Check if a username has been passed in, if not do not filter on username
         match = {}
         if username is None:
-            match = {"$match": {"$text": {"$search": keyword}}}
+            match = {"$match": {"$text": {"$search": f'\"{keyword}\"'}}}
         else:
-            match = {"$match": {"username": username, "$text": {"$search": keyword}}}
+            match = {"$match": {"username": username, "$text": {"$search": f'\"{keyword}\"'}}}
         self.day_pipeline = [
             match,  # The match filter (either containing username filter or not)
             {
