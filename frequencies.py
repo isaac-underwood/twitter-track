@@ -185,7 +185,7 @@ class Frequency:
             {
                 "$group":
                 {
-                    "_id": {"week": "$week"},
+                    "_id": {"$week": "$wholeDate"},
                     "count": {"$sum": 1},
                     "positive_sentiment": {
                         "$sum": 
@@ -234,7 +234,7 @@ class Frequency:
                     "wholeDate": {"$dateFromString": {"dateString": "$date"}},
                     "dateFrom": date_from,
                     "dateUntil": date_until,
-                    "day": {"$dayOfMonth": {"$dateFromString": {"dateString": "$date"}}},
+                    "day": {"$dayOfWeek": {"$dateFromString": {"dateString": "$date"}}},
                     "positiveSentiment": {"$strcasecmp": ['$sentiment_label', 'positive']},
                     "negativeSentiment": {"$strcasecmp": ['$sentiment_label', 'negative']},
 

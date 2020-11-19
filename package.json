@@ -1,0 +1,23 @@
+{
+  "name": "twitter-track",
+  "version": "1.0.0",
+  "description": "* [Flask](https://flask.palletsprojects.com/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drozado/twitter-track.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/drozado/twitter-track/issues"
+  },
+  "homepage": "https://github.com/drozado/twitter-track#readme",
+  "dependencies": {
+    "chartjs-plugin-datalabels": "^0.7.0",
+    "fullpage.js": "^3.0.9"
+  }
+}

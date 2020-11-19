@@ -14,7 +14,7 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label class="control-label" for="search">Search Term(s)</label>
-              <input type="text" class="form-control" id="search" name="search" placeholder="e.g. cat">
+              <input type="text" class="form-control" id="search" name="search" placeholder="e.g. cat" value="Trump">
             </div>
             <div class="form-group required col-md-6">
             <label class="control-label" for="news">Twitter Account:</label>
@@ -22,7 +22,7 @@
                 <option value="all">All</option>
                 <option value="cnn">CNN</option>
                 <option value="msnbc">MSNBC</option>
-                <!-- <option value="bbc">BBC</option> -->
+                <option value="npr">NPR</option>
                 <option value="wsj">Wall Street Journal</option>
                 <option value="foxnews">Fox News</option>
                 <option value="nytimes">New York Times</option>
@@ -31,12 +31,12 @@
           </div>
           <div class="form-row">
             <div class="form-group required col-md-6">
-              <label class="control-label" for="end">Start Date</label>
-              <input type="date" id="start" name="start" class="form-control" required>
+              <label class="control-label" for="start">Start Date</label>
+              <input type="date" id="start" name="start" class="form-control" required value="2006-01-01">
             </div>
             <div class="form-group required col-md-6">
-              <label class="control-label" for="start">End Date</label>
-              <input type="date" id="end" name="end" class="form-control" required>
+              <label class="control-label" for="end">End Date</label>
+              <input type="date" id="end" name="end" class="form-control" required value="2020-11-20">
             </div>
           </div>
 
@@ -48,19 +48,7 @@
                 <label class="custom-control-label" for="sentiment-switch">Sentiment Analysis</label>
               </div>
             </div>
-              <div class="form-group col-md-3 sentiment-radio-block">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" id="positive" name="sentimentv" value="positive" checked>
-                  <label class="form-check-label" for="positive">Positive</label>
-                </div>
-              </div>
-              <div class="form-group col-md-3 sentiment-radio-block">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" id="negative" name="sentimentv" value="negative">
-                  <label class="form-check-label" for="negative">Negative</label>
-                </div>
-              </div>
-            </div>
+          </div>
             
 
           <hr>
@@ -97,13 +85,13 @@
             <legend class="col-form-label required col-sm-2 pt-0">Graph Type</legend>
             <div class="form-group col-md-2">
               <div class="form-check">
-                <input class="form-check-input" type="radio" id="bar" name="graph" value="bar" checked>
+                <input class="form-check-input" type="radio" id="bar" name="graph" value="bar">
                 <label class="form-check-label" for="bar">Bar</label>
               </div>
             </div>
             <div class="form-group col-md-2">
               <div class="form-check">
-                <input class="form-check-input" type="radio" id="line" name="graph" value="line">
+                <input class="form-check-input" type="radio" id="line" name="graph" value="line" checked>
                 <label class="form-check-label" for="line">Line</label>
               </div>  
             </div>
