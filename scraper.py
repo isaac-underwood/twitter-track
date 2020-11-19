@@ -9,7 +9,7 @@ import twint as tw
 
 print('Initialising twint config')
 #tc.Output = f'tw-{datetime.now().strftime("%Y%m%d-%H%M%S")}-newsoutlets.csv'  # Set filename to include current date/time
-NEWSOUTLETS = ['CNN', 'MSNBC', 'FoxNews', 'WSJ', 'BBC', 'NPR']
+NEWSOUTLETS = ['nytimes', 'CNN', 'BBC', 'MSNBC', 'NPR', 'FoxNews', 'WSJ']
 DPATH = os.getcwd() + '/data'  # Equates to ./data
 
 
@@ -62,6 +62,7 @@ def scrape_tweets(tc, username):
 
 # Adds objects to database using mongoimport from a given CSV file
 def insert_data(filename):
+    # Run mongoimport tool to import data to database
     list_files = subprocess.run(['mongoimport.exe', '-dtest', '-ctest',
                                 '--headerline', '--type=csv', filename],
                                 shell=True)

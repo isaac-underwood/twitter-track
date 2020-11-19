@@ -4,6 +4,7 @@ from pymongo import MongoClient
 from bson.json_util import dumps
 from frequencies import Frequency
 import os
+import json
 from datetime import datetime
 import numpy as np
 
@@ -24,75 +25,61 @@ def index():
 def search():
     return render_template('index.html')
 
+@app.route('/graphtwo', methods=['GET', 'POST'])
+def graph_two():
+    # if request.method == 'POST':
+        # aggregate = request.form['aggregate']
+        # org = request.form['news']
+        # word = request.form['search']
+        # end = request.form['end']
+        # start = request.form['start']
+        # graph = request.form['graph']
+
+        # queried_title = f'"{word}" — {org} — {end} - {start}'
+    freq = Frequency(client)
+    # result = dumps(list(freq.get_year_total(search_keyword="Trump", date_from="2006-01-01", date_until="2020-11-10")))
+    result = dumps(list(freq.get_day_total(search_keyword="Trump", date_from="2006-01-01", date_until="2020-11-10")))
+    print(result)
+    return result
+        
 
 @app.route('/graph', methods=['GET', 'POST'])
 def graph():
     if request.method == 'POST':
-        days_count = [0, 0, 0, 0, 0, 0, 0]
         months = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December']
-        months_count = np.zeros((12), dtype=int)
-        weeks_count = np.zeros((52), dtype=int)
-        years_count = np.zeros((16,), dtype=int)
         aggregate = request.form['aggregate']
         org = request.form['news']
         word = request.form['search']
-        end = request.form['start']
-        start = request.form['end']
+        end = request.form['end']
+        start = request.form['start']
         graph = request.form['graph']
 
-        sentiment_value = ''
-        if 'sentiment-switch' in request.form:
-            sentiment_enabled = request.form['sentiment-switch']
-            if sentiment_enabled == "on":
-                sentiment_value = request.form['sentimentv']
+        queried_title = f'"{word}" — {org} — {start} - {end}'
 
-        queried_title = f'"{word}" — {org} — {end} - {start}'
-
+        freq = Frequency(client)
         if org == 'all':
-            if sentiment_value != '':
-                t = tweets.find({"$text": {"$search": word}, "sentiment_label": sentiment_value.upper(), "date": {"$lt": start}, "date": {"$gt": end}})
-            else:
-                t = tweets.find({"$text": {"$search": word}, "date": {"$lt": start}, "date": {"$gt": end}})
-        else:
-            if sentiment_value != '':
-                t = tweets.find({"$text": {"$search": word}, "username": org, "sentiment_label": sentiment_value.upper(), "date": {"$lt": start}, "date": {"$gt": end}})
-            else:
-                t = tweets.find({"$text": {"$search": word}, "username": org, "date": {"$lt": start}, "date": {"$gt": end}})
-        for tw in t:
-            date = tw['date'].replace('-', '/')
-            date_obj = datetime.strptime(date, '%Y/%m/%d')
-            if aggregate == 'month':
-                months_count[date_obj.month-1]+=1
-            if aggregate == 'day':
-                days_count[date_obj.weekday()]+=1
-            if aggregate == 'week':
-                weeks_count[date_obj.isocalendar()[1]-2]+=1
-            if aggregate == 'year':
-                # print(date_obj.year%2009)
-                years_count[date_obj.year%2005]+=1
-            # date = tw['date'].replace('-', '/')
-            # date_obj = datetime.strptime(date, '%Y/%m/%d')
-            # if word in tw['tweet']:
-            #     if aggregate == 'month':
-            #         months_count[date_obj.month-1]+=1
-            #     if aggregate == 'day':
-            #         days_count[date_obj.weekday()]+=1
-            #     if aggregate == 'week':
-            #         weeks_count[date_obj.isocalendar()[1]-1]+=1
-            #     if aggregate == 'year':
-            #         years_count[date_obj.year%2011]+=1
+            org = None
+
+        rand_tweets = dumps(tweets.aggregate([
+            {"$match": {"$text": {"$search": word}}}, 
+            {"$sample": {"size": 1}}
+            ]), default=str)
+
         if aggregate == 'month':
-            return render_template('graph_month.html', word_count=months_count, word=months, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
-        if aggregate == 'week':
-            return render_template('graph_week.html', word_count=weeks_count, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
-        if aggregate == 'day':
-            return render_template('graph_day.html', word_count=days_count, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
-        if aggregate == 'year':
-            return render_template('graph_year.html', word_count=years_count, graph=graph, qt=queried_title, sentiment=sentiment_value.capitalize())
+            result = list(freq.get_month_total(search_keyword=word, username=org, date_from=start, date_until=end))
+            return render_template('graph_month.html', word_count=result, word=months, graph=graph, qt=queried_title)
+        elif aggregate == 'week':
+            result = list(freq.get_week_total(search_keyword=word, username=org, date_from=start, date_until=end))
+            return render_template('graph_week.html', word_count=result, graph=graph, qt=queried_title,)
+        elif aggregate == 'day':
+            result = list(freq.get_day_total(search_keyword=word, username=org, date_from=start, date_until=end))
+            return render_template('graph_day.html', word_count=result, graph=graph, qt=queried_title)
+        elif aggregate == 'year':
+            result = list(freq.get_year_total(search_keyword=word, username=org, date_from=start, date_until=end))
+            return render_template('graph_year.html', word_count=result, graph=graph, qt=queried_title, randtw=rand_tweets)
     else:
-        return render_template('graph_year.html')
-    # return str(tweet['tweet'])
+        return 'Not found', 404
 
 # API ROUTES
 

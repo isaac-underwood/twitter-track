@@ -6,7 +6,7 @@
 {% block content %}
 <div id="fullpage">
     <div class="section container-fluid graph-section text-center">
-        <h1>Week Timeline</h1>
+        <h1 class="mt-3">Net Sentiment of Tweets (Weekly)</h1>
         <h6 class="text-muted">{{ qt }}</h6>
         <div class="chart-container mx-auto">
             <canvas id="myChart" responsive=true maintainAspectRatio=false></canvas>
@@ -14,53 +14,59 @@
     </div>
 </div>
 <script>
-    {% if sentiment == 'Positive' %}
-        var backgroundCol = 'rgba(14, 240, 48, 0.8)';
-    {% elif sentiment == 'Negative' %}
-        var backgroundCol = 'rgba(184, 0, 0, 0.8)';
-    {% else %}
-        var backgroundCol = 'rgba(0, 0, 0, 1)';
-    {% endif %}
-var ctx = document.ge
+var backgroundCol = 'hsl(142, 30%, 60%)';
+var pos = [];
+var neg = [];
+var diff = [];
+var labelList = [];
+var countResults = {{ word_count|tojson|safe }};
+delete countResults[0];
+let i = 1;
+console.log(countResults);
+Object.entries(countResults).forEach(el => {
+    posPerc = (el[1]['positive_sentiment'] / el[1]['count']) * 100;  // Calculate positive sentiment percentage (positive / total * 100)
+    negPerc= (el[1]['negative_sentiment'] / el[1]['count']) * 100;  // Calculate negative sentiment percentage
+    diff[i] = posPerc - negPerc;  // Calculate net sentiment (positive percent - negative percent) = net sentiment
+    pos[i] = el[1]['positive_sentiment'];
+    neg[i] = el[1]['negative_sentiment'];
+    labelList[i] = el[1]['_id']
+    console.log(labelList[i]);
+    i++;
+});
+{% if graph == 'bar' %}
+    const colours = diff.map((value) => value < 0 ? 'rgb(229, 120, 115)' : 'hsl(142, 30%, 60%)');  // Used to colour positive/negative bar graph
+{% else %}
+    const colours = 'hsl(142, 30%, 60%)';
+{% endif %}
+var posDataset = {
+    data: diff,
+    borderColor: colours,
+    backgroundColor: colours,
+    fill: false,
+    label: '% of Tweets',
+};
 var ctx = document.getElementById('myChart');
 var myChart = new Chart(ctx, {
     type: '{{graph}}',
     data: {
-        labels: ['1','2','3','4','5','6','7','8','9','10',
-		'11','12','13','14','15','16','17','18','19','20',
-		'21','22','23','24','25','26','27','28','29','30',
-		'31','32','33','34','35','36','37','38','39','40',
-		'41','42','43','44','45','46','47','48','49','50',
-		'51','52'],
-        datasets: [{
-            label: '# of {{sentiment}} Tweets',
-            data: [{% for item in word_count %}
-				{{item}},
-			{% endfor %}],
-            {% if graph == "bar" %}
-			backgroundColor: [
-				{% for item in word_count %}
-				'rgba(216, 27, 96, 0.6)',
-				{% endfor %}
-            ],
-            borderColor: [
-                {% for item in word_count %}
-                    'rgba(216, 27, 96, 1)',
-                {% endfor %}
-            ],
-            {% else %}
-            backgroundColor: backgroundCol,
-            borderColor: backgroundCol,
-            {% endif %}
-			borderWidth: 1,
-            fill: false
-        }]
+        labels: labelList,
+        datasets: [posDataset]
     },
     options: {
         scales: {
             yAxes: [{
                 ticks: {
                     beginAtZero: true
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Percentage (%) +/-'
+                },
+            }],
+            xAxes: [{
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Week'
                 }
             }]
         },
@@ -68,12 +74,15 @@ var myChart = new Chart(ctx, {
             enabled: true,
             callbacks: {
                 label: (tooltipItem, data) => {
-                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
-
+                    var label = [data.datasets[tooltipItem.datasetIndex].label || ''];
                     if (label) {
-                        label += ': ';
+                        label[0] += ': ';
                     }
-                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                    label[0] += Math.round(tooltipItem.yLabel * 100) / 100;
+                    label.push('# Positive Tweets: ' + pos[tooltipItem["index"]]);
+                    label.push('# Negative Tweets: ' + neg[tooltipItem["index"]]);
+                    label.push('Total Tweet Count: ' + countResults[tooltipItem["index"]]["count"]);
+                    
                     return label;
                 },
                 labelColor: (tooltipItem, chart) => {
@@ -85,7 +94,11 @@ var myChart = new Chart(ctx, {
                 labelTextColor: (tooltipItem, chart) => {
                     return '#543453';
                 }
-            }
+            },
+            titleFontFamily: "'Oxygen', sans-serif",
+            titleFontSize: 20,
+            bodyFontFamily: "'Source Sans Pro', sans-serif",
+            bodyFontSize: 18,
         }
     }
 });
